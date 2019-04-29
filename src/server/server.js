@@ -13,6 +13,7 @@ server.get('/', (req, res) => {
     <html>
       <head>
         <title>Digital Pet</title>
+        <link rel="stylesheet" href="style.css" />
       </head>
       <body>
         <div id="mountNode">${initialMarkup}</div>

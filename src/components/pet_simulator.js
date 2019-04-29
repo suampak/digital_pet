@@ -17,27 +17,23 @@ export default function PetSimulator() {
 
 const Menu = (props) => {
   return (
-    <>
+    <div>
       <NewUser setUser={props.setUser}/>
       <UserInfo user={props.user}/>
       <PetInfoLists petLists={props.user.pet} setPet={props.setPet}/>
       <NewPet setUser={props.setUser} user={props.user}/>
-    </>
+    </div>
   );
 }
 
 const PetRoom = (props) => {
   return (
-    <>
+    <div>
       <PetInfo pet={props.pet}/>
       <PetSkill pet={props.pet}/>
       <PetStatus pet={props.pet}/>
-      <button
-        onClick={() => props.setPet(null)}
-      >
-        Menu
-      </button>
-    </>
+      <button onClick={() => props.setPet(null)}>Menu</button>
+    </div>
   )
 
 }
