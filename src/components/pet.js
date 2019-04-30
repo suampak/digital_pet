@@ -3,6 +3,26 @@ import {User} from './user.js';
 import Status from './status.js';
 import Skill from './skill.js';
 
+export const PetProfile = (props) => {
+  const user = props.user;
+  const handleDelete = () => {
+    props.setPet('menu');
+    user.pet.splice(user.pet.indexOf(props.pet),1);
+    props.setUser(new User(user.name, user.gender, user.exp, user.point,
+      user.pet));
+  };
+
+  return (
+    <div>
+      <PetInfo pet={props.pet}/>
+      <PetSkill pet={props.pet}/>
+      <PetStatus pet={props.pet}/>
+      <button onClick={() => props.setPet('menu')}>Menu</button>
+      <button onClick={handleDelete}>Delete</button>
+    </div>
+  )
+}
+
 export class PetStatus extends React.Component {
   render() {
     const status = this.props.pet.status;
@@ -44,14 +64,11 @@ export class PetInfo extends React.Component {
   }
 }
 
-export const PetInfoLists = (props) => {
+export const PetLists = (props) => {
   return (
     <div>
       {props.petLists.map(pet =>
-        <div>
-          <PetInfo key={pet.id} pet={pet}/>
-          <button onClick={() => {props.setPet(pet);}}>Select {pet.name}</button>
-        </div>
+        <button onClick={() => {props.setPet(pet);}}>{pet.name}</button>
       )}
     </div>
   );
@@ -80,58 +97,62 @@ export const NewPet = (props) => {
     setName('');
     setGender('Male');
     setBday('');
+    props.setPet('menu');
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>Name:
+    <div>
+      <form onSubmit={handleSubmit}>
+        <label>Name:
+          <input
+            type="text"
+            name="name"
+            value={name}
+            onChange={event => setName(event.target.value)}
+            placeholder="Your Name"
+            required
+          />
+        </label>
+        <br/>
+
+        <label>Gender:
+          <input
+            type="radio"
+            name="gender"
+            value="Male"
+            onChange={event => setGender(event.target.value)}
+            checked={gender === "Male"}
+          />Male
+          <input
+            type="radio"
+            name="gender"
+            value="Female"
+            onChange={event => setGender(event.target.value)}
+            checked={gender === "Female"}
+          />Female
+        </label>
+        <br/>
+
+        <label>Date:
+          <input
+            type="date"
+            name="bday"
+            value={bday}
+            min="1900-01-01"
+            max="2030-01-01"
+            onChange={event => setBday(event.target.value)}
+            required
+          />
+        </label>
+        <br/>
+
         <input
-          type="text"
-          name="name"
-          value={name}
-          onChange={event => setName(event.target.value)}
-          placeholder="Your Name"
-          required
+          type="submit"
+          name="submit"
+          value="Add New Pet"
         />
-      </label>
-      <br/>
-
-      <label>Gender:
-        <input
-          type="radio"
-          name="gender"
-          value="Male"
-          onChange={event => setGender(event.target.value)}
-          checked={gender === "Male"}
-        />Male
-        <input
-          type="radio"
-          name="gender"
-          value="Female"
-          onChange={event => setGender(event.target.value)}
-          checked={gender === "Female"}
-        />Female
-      </label>
-      <br/>
-
-      <label>Date:
-        <input
-          type="date"
-          name="bday"
-          value={bday}
-          min="1900-01-01"
-          max="2030-01-01"
-          onChange={event => setBday(event.target.value)}
-          required
-        />
-      </label>
-      <br/>
-
-      <input
-        type="submit"
-        name="submit"
-        value="Add New Pet"
-      />
-    </form>
+      </form>
+      <button onClick={() => props.setPet('menu')}>Menu</button>
+    </div>
   );
 }
