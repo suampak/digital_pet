@@ -5,4 +5,10 @@ export default class Skill {
     this.intelligence = intelligence;
     this.art = art;
   }
+
+  fill(strDiff, intDiff, artDiff) {
+    this.strength += strDiff;
+    this.intelligence += intDiff;
+    this.art += artDiff;
+  }
 }
