@@ -1,59 +1,117 @@
-import React, {useState} from 'react';
-import {User} from './user.js';
-import Status from './status.js';
-import Skill from './skill.js';
-import {MAXACTION, MAXREMAINTIME, MAXPARA, DIFFSTATUS, DIFFSKILL, DIFFEXP} from './constant.js'
+import React, { useState } from "react";
+import { toast } from "react-toastify";
+import Status from "./status.js";
+import Skill from "./skill.js";
+import {
+  MAXACTION,
+  MAXREMAINTIME,
+  MAXPARA,
+  MAXPET,
+  DIFFSKILL,
+  DIFFEXP,
+  ISREQUIRED
+} from "./constant.js";
 
-export const PetProfile = (props) => {
+import "./../css/style.css";
+
+/* eslint react/prop-types: 0 */
+
+export const PetProfile = props => {
   const user = props.user;
   const handleDelete = () => {
-    props.setPet('menu');
+    props.setPet("menu");
     props.setUser(user.removePet(props.pet));
+    return toast(
+      <div>
+        {user.name} has abandoned {props.pet.name}
+      </div>
+    );
+  };
+
+  return (
+    <div className="background">
+      <PetInfo pet={props.pet} />
+      <PetSkill pet={props.pet} />
+      <PetStatus pet={props.pet} />
+      <Action
+        setPet={props.setPet}
+        pet={props.pet}
+        setUser={user}
+        user={user}
+      />
+      <div className="remainAction">#Actions: {props.pet.actionLimit}</div>
+      <div className="remainAction">Time Remains: {props.pet.remainTime}</div>
+      <button className="homeButton" onClick={() => props.setPet("menu")}>
+        Menu
+      </button>
+      <button className="deleteButton" onClick={handleDelete}>
+        Delete
+      </button>
+    </div>
+  );
+};
+
+export const Action = props => {
+  const clickAction = func => {
+    props.setPet(func);
+    props.setUser(props.user.gainEXP(DIFFEXP));
   };
 
   return (
     <div>
-      <PetInfo pet={props.pet}/>
-      <PetSkill pet={props.pet}/>
-      <PetStatus pet={props.pet}/>
-      <button onClick={() => props.setPet('menu')}>Menu</button>
-      <button onClick={handleDelete}>Delete</button>
-      <Action setPet={props.setPet} pet={props.pet} setUser={user} user={user}/>
-      <div>#Actions: {props.pet.actionLimit}</div>
-      <div>Time Remains: {props.pet.remainTime}</div>
+      <div className="allButtons">
+        <button onClick={() => clickAction(props.pet.sleep(DIFFSKILL))}>
+          Sleep
+        </button>
+        <button onClick={() => clickAction(props.pet.eat(DIFFSKILL))}>
+          Eat
+        </button>
+        <button onClick={() => clickAction(props.pet.shower(DIFFSKILL))}>
+          Shower
+        </button>
+        <button onClick={() => clickAction(props.pet.poop(DIFFSKILL))}>
+          Poop
+        </button>
+      </div>
+      <div className="allButtons">
+        <button onClick={() => clickAction(props.pet.hug(DIFFSKILL))}>
+          Hug
+        </button>
+        <button onClick={() => clickAction(props.pet.exercise(DIFFSKILL))}>
+          Exercise
+        </button>
+        <button onClick={() => clickAction(props.pet.read(DIFFSKILL))}>
+          Read
+        </button>
+        <button onClick={() => clickAction(props.pet.draw(DIFFSKILL))}>
+          Draw
+        </button>
+      </div>
     </div>
-  )
-}
-
-export const Action = (props) => {
-  const clickAction = (func) => {
-    props.setPet(func);
-    props.setUser(props.user.gainEXP(DIFFEXP));
-  }
-
-  return (
-    <div>
-      <button onClick={() => clickAction(props.pet.sleep(DIFFSKILL))}>Sleep</button>
-      <button onClick={() => clickAction(props.pet.eat(DIFFSKILL))}>Eat</button>
-      <button onClick={() => clickAction(props.pet.shower(DIFFSKILL))}>Shower</button>
-      <button onClick={() => clickAction(props.pet.poop(DIFFSKILL))}>Poop</button>
-      <button onClick={() => clickAction(props.pet.hug(DIFFSKILL))}>Hug</button>
-      <button onClick={() => clickAction(props.pet.exercise(DIFFSKILL))}>Exercise</button>
-      <button onClick={() => clickAction(props.pet.read(DIFFSKILL))}>Read Book</button>
-      <button onClick={() => clickAction(props.pet.draw(DIFFSKILL))}>Draw Picture</button>
-    </div>
-  )
-}
+  );
+};
 
 export class PetStatus extends React.Component {
   render() {
     const status = this.props.pet.status;
     return (
       <ul>
-        <li><label>Energy: </label><progress value={status.energy} max={MAXPARA}></progress></li>
-        <li><label>Hunger: </label><progress value={status.hunger} max={MAXPARA}></progress></li>
-        <li><label>Hygiene: </label><progress value={status.hygiene} max={MAXPARA}></progress></li>
-        <li><label>Poop: </label><progress value={status.poop} max={MAXPARA}></progress></li>
+        <li>
+          <label>Energy: </label>
+          <progress value={status.energy} max={MAXPARA} />
+        </li>
+        <li>
+          <label>Hunger: </label>
+          <progress value={status.hunger} max={MAXPARA} />
+        </li>
+        <li>
+          <label>Hygiene: </label>
+          <progress value={status.hygiene} max={MAXPARA} />
+        </li>
+        <li>
+          <label>Poop: </label>
+          <progress value={status.poop} max={MAXPARA} />
+        </li>
       </ul>
     );
   }
@@ -64,9 +122,18 @@ export class PetSkill extends React.Component {
     const skill = this.props.pet.skill;
     return (
       <ul>
-        <li><label>Strength: </label><progress value={skill.strength} max={MAXPARA}></progress></li>
-        <li><label>Intelligence: </label><progress value={skill.intelligence} max={MAXPARA}></progress></li>
-        <li><label>Art: </label><progress value={skill.art} max={MAXPARA}></progress></li>
+        <li>
+          <label>Strength: </label>
+          <progress value={skill.strength} max={MAXPARA} />
+        </li>
+        <li>
+          <label>Intelligence: </label>
+          <progress value={skill.intelligence} max={MAXPARA} />
+        </li>
+        <li>
+          <label>Art: </label>
+          <progress value={skill.art} max={MAXPARA} />
+        </li>
       </ul>
     );
   }
@@ -77,35 +144,74 @@ export class PetInfo extends React.Component {
     const petInfo = this.props.pet;
     return (
       <ul>
-        <li><label>Name: </label>{petInfo.name}</li>
-        <li><label>Type: </label>{petInfo.type}</li>
-        <li><label>Gender: </label>{petInfo.gender}</li>
-        <li><label>Birthday </label>{petInfo.bday}</li>
-        <li><label>Affection: </label><progress value={petInfo.affection >= 0 ? petInfo.affection : 0} max={MAXPARA}></progress></li>
+        <li>
+          <label>Name: </label>
+          {petInfo.name}
+        </li>
+        <li>
+          <label>Type: </label>
+          {petInfo.type}
+        </li>
+        <li>
+          <label>Gender: </label>
+          {petInfo.gender}
+        </li>
+        <li>
+          <label>Birthday </label>
+          {petInfo.bday}
+        </li>
+        <li>
+          <label>Affection: </label>
+          <progress
+            value={petInfo.affection >= 0 ? petInfo.affection : 0}
+            max={MAXPARA}
+          />
+        </li>
       </ul>
     );
   }
 }
 
-export const PetLists = (props) => {
+export const PetLists = props => {
+  let button;
+  if (props.numPet < MAXPET) {
+    button = <button onClick={() => props.setPet("newPet")}>+</button>;
+  }
+
   return (
-    <div>
-      {props.petLists.map(pet =>
-        <button onClick={() => {props.setPet(pet);}}>{pet.name}</button>
-      )}
+    <div className="allButtons">
+      {props.petLists.map(pet => (
+        <button
+          key={pet}
+          onClick={() => {
+            props.setPet(pet);
+          }}
+        >
+          {pet.name}
+        </button>
+      ))}
+      {button}
     </div>
   );
-}
+};
 
 export class Pet {
-  constructor(name = '', type = '', gender = '', bday = '', affection = 0, status, skill) {
+  constructor(
+    name = "",
+    type = "",
+    gender = "",
+    bday = "",
+    affection = 0,
+    status,
+    skill
+  ) {
     this.name = name;
     this.type = type;
     this.gender = gender;
     this.bday = bday;
     this.affection = affection;
     this.status = status || new Status();
-    this.skill = skill || new Skill;
+    this.skill = skill || new Skill();
     this.actionLimit = MAXACTION;
     this.remainTime = MAXREMAINTIME;
   }
@@ -127,9 +233,9 @@ export class Pet {
   }
 
   fillActionLimit() {
-    if(this.actionLimit < MAXACTION) {
+    if (this.actionLimit < MAXACTION) {
       this.remainTime--;
-      if(this.remainTime === 0) {
+      if (this.remainTime === 0) {
         this.actionLimit++;
         this.remainTime = MAXREMAINTIME;
       }
@@ -157,7 +263,7 @@ export class Pet {
   }
 
   hug(affectDiff) {
-    if(this.actionLimit > 0) {
+    if (this.actionLimit > 0) {
       this.affection += affectDiff;
       this.actionLimit--;
     }
@@ -165,7 +271,7 @@ export class Pet {
   }
 
   exercise(strDiff) {
-    if(this.actionLimit > 0) {
+    if (this.actionLimit > 0) {
       this.fillSkill(strDiff, 0, 0);
       this.actionLimit--;
     }
@@ -173,7 +279,7 @@ export class Pet {
   }
 
   read(intDiff) {
-    if(this.actionLimit > 0) {
+    if (this.actionLimit > 0) {
       this.fillSkill(0, intDiff, 0);
       this.actionLimit--;
     }
@@ -187,81 +293,95 @@ export class Pet {
   }
 }
 
-export const NewPet = (props) => {
-  const [name, setName] = useState('');
-  const [type, setType] = useState('Duck')
-  const [gender, setGender] = useState('Male');
-  const [bday, setBday] = useState('');
-  const handleSubmit = (event) => {
+export const NewPet = props => {
+  const [name, setName] = useState("");
+  const [type, setType] = useState("Duck");
+  const [gender, setGender] = useState("Male");
+  const [bday, setBday] = useState("");
+  const handleSubmit = event => {
     event.preventDefault();
     const user = props.user;
     props.setUser(user.addPet(name, type, gender, bday));
-    props.setPet('menu');
-    setName('');
-    setGender('Duck');
-    setGender('Male');
-    setBday('');
+    props.setPet("menu");
+    setName("");
+    setGender("Duck");
+    setGender("Male");
+    setBday("");
+    return toast(
+      <div>
+        {user.name} has added new pet {name}
+      </div>
+    );
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <label>Name:
+    <div className="background">
+      <form className="petForm" onSubmit={handleSubmit}>
+        <label>
+          Name:
           <input
             type="text"
             name="name"
             value={name}
             onChange={event => setName(event.target.value)}
             placeholder="Your Name"
-            required
+            required={ISREQUIRED}
           />
         </label>
-        <br/>
+        <br />
 
-        <label>Type:
+        <label>
+          Type:
           <input
             type="radio"
             name="type"
             value="Duck"
             onChange={event => setType(event.target.value)}
             checked={type === "Duck"}
-          />Duck
+          />
+          Duck
           <input
             type="radio"
             name="type"
             value="Rat"
             onChange={event => setType(event.target.value)}
             checked={type === "Rat"}
-          />Rat
+          />
+          Rat
           <input
             type="radio"
             name="type"
             value="Bear"
             onChange={event => setType(event.target.value)}
             checked={type === "Bear"}
-          />Bear
+          />
+          Bear
         </label>
-        <br/>
+        <br />
 
-        <label>Gender:
+        <label>
+          Gender:
           <input
             type="radio"
             name="gender"
             value="Male"
             onChange={event => setGender(event.target.value)}
             checked={gender === "Male"}
-          />Male
+          />
+          Male
           <input
             type="radio"
             name="gender"
             value="Female"
             onChange={event => setGender(event.target.value)}
             checked={gender === "Female"}
-          />Female
+          />
+          Female
         </label>
-        <br/>
+        <br />
 
-        <label>Date:
+        <label>
+          Date:
           <input
             type="date"
             name="bday"
@@ -269,18 +389,21 @@ export const NewPet = (props) => {
             min="1900-01-01"
             max="2030-01-01"
             onChange={event => setBday(event.target.value)}
-            required
+            required={ISREQUIRED}
           />
         </label>
-        <br/>
+        <br />
 
         <input
+          className="confirmButton"
           type="submit"
           name="submit"
           value="Add New Pet"
         />
       </form>
-      <button onClick={() => props.setPet('menu')}>Menu</button>
+      <button className="homeButton" onClick={() => props.setPet("menu")}>
+        Menu
+      </button>
     </div>
   );
-}
+};

@@ -1,0 +1,105 @@
+html * {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  color: #272828;
+}
+
+.background {
+  background-color: #d8f0ff;
+  display: inline-block;
+  width: 280px;
+  height: 560px;
+  margin: 20px;
+  border-color: #1b2347;
+  border-style: solid;
+  border-width: 4px;
+}
+
+.toaster {
+  background-color: #ffd2f0;
+}
+
+input {
+  color: #1a8266;
+  background-color: rgb(227, 229, 245);
+  padding: 5px;
+  margin: 10px;
+}
+
+label {
+  margin: 20px;
+  font-weight: bold;
+}
+
+ul {
+  margin: 30px 0px;
+  padding: 0px;
+}
+
+ul li {
+  list-style-type: none;
+  margin: 10px 0px;
+  padding: 0px;
+}
+
+.remainAction {
+  margin: 0px 20px;
+}
+
+.userForm {
+  position: relative;
+  top: 40%;
+}
+
+.petForm {
+  position: relative;
+  top: 30%;
+}
+
+.allButtons {
+  margin: 15px;
+  background-color: #aeebb8;
+  border-color: #1b2347;
+  border-style: solid;
+  border-width: 2px;
+}
+
+button {
+  color: white;
+  background-color: rgb(41, 189, 120);
+  margin: 5px 0px 5px 5px;
+}
+
+.confirmButton {
+  color: white;
+  background-color: rgb(26, 37, 117);
+  padding: 5px;
+  margin: 10px 0px 20px 20px;
+}
+
+.homeButton {
+  color: white;
+  background-color: rgb(48, 50, 65);
+  padding: 5px;
+  margin: 10px 0px 20px 20px;
+  position: absolute;
+  top: 530px;
+  left: 220px;
+}
+
+.deleteButton {
+  color: white;
+  background-color: rgb(48, 50, 65);
+  padding: 5px;
+  margin: 10px 0px 20px 20px;
+  position: absolute;
+  top: 530px;
+  left: 160px;
+}
+
+.time {
+  color: rgb(5, 80, 90);
+  position: absolute;
+  top: 555px;
+  left: 160px;
+}
