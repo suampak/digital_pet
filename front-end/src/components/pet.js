@@ -287,8 +287,10 @@ export class Pet {
   }
 
   draw(artDiff) {
-    this.fillSkill(0, 0, artDiff);
-    this.actionLimit--;
+    if (this.actionLimit > 0) {
+      this.fillSkill(0, 0, artDiff);
+      this.actionLimit--;
+    }
     return this;
   }
 }

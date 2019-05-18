@@ -1,0 +1,40 @@
+{
+  "name": "digital_pet",
+  "version": "1.0.0",
+  "description": "back-end",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon ./build/bundle.js",
+    "build": "rm -rf build && webpack --config webpack.config.dev.js --mode development",
+    "update": "mongo petAPI < ./test_data/userJson.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4",
+    "mongoose": "^5.3.10",
+    "nodemon": "^1.18.5"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
+    "babel-loader": "^8.0.6",
+    "eslint": "^5.8.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "webpack": "^4.31.0",
+    "webpack-cli": "^3.3.2",
+    "webpack-node-externals": "^1.7.2"
+  },
+  "nodemonConfig": {
+    "restartable": "rs",
+    "ignore": [
+      "node_modules/**/node_modules"
+    ],
+    "delay": "2500",
+    "env": {
+      "NODE_ENV": "development",
+      "PORT": 4000
+    }
+  }
+}

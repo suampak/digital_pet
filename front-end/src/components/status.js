@@ -1,7 +1,12 @@
-import {MAXPARA} from './constant.js'
+import { MAXPARA } from "./constant.js";
 
 export default class Status {
-  constructor(energy = MAXPARA, hunger = MAXPARA, hygiene = MAXPARA, poop = MAXPARA) {
+  constructor(
+    energy = MAXPARA,
+    hunger = MAXPARA,
+    hygiene = MAXPARA,
+    poop = MAXPARA
+  ) {
     // max: 100 (+), min: 0 (-)
     this.energy = energy;
     this.hunger = hunger;
@@ -24,9 +29,11 @@ export default class Status {
   }
 
   countExhausted() {
-    return (this.energy > 0 ? 0 : 1) +
-           (this.hunger > 0 ? 0 : 1) +
-           (this.hygiene > 0 ? 0 : 1) +
-           (this.poop > 0 ? 0 : 1);
+    return (
+      (this.energy > 0 ? 0 : 1) +
+      (this.hunger > 0 ? 0 : 1) +
+      (this.hygiene > 0 ? 0 : 1) +
+      (this.poop > 0 ? 0 : 1)
+    );
   }
 }

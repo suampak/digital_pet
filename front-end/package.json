@@ -1,6 +1,7 @@
 {
   "name": "digital_pet",
   "version": "1.0.0",
+  "description": "front-end",
   "scripts": {
     "start": "webpack-dev-server --config webpack.config.dev.js --port 3000"
   },
