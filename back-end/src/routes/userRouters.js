@@ -4,11 +4,7 @@ import User from "./../models/userModel";
 const userRouter = (userModel => {
   const router = express.Router();
   router.use("/users", (req, res, next) => {
-    const query = {};
-    if (req.query.name) {
-      query.name = req.query.name;
-    }
-    userModel.find(query, (err, users) => {
+    userModel.find(req.query, (err, users) => {
       if (err) {
         return res.send(err);
       }
@@ -21,8 +17,26 @@ const userRouter = (userModel => {
   });
   router
     .route("/users")
-    .get((req, res) => {
-      res.json(req.users);
+    .get((req, res) => res.json(req.users))
+    .put((req, res) => {
+      const { users } = req;
+      const { body } = req;
+      for (let user of users) {
+        user.name = body.name;
+        user.password = body.password;
+        user.gender = body.gender;
+        user.bday = body.bday;
+        user.exp = body.exp;
+        user.point = body.point;
+        user.pet = body.pet;
+        user.timestamp = body.timestamp;
+        user.save(err => {
+          if (err) {
+            return res.send(err);
+          }
+        });
+      }
+      return res.sendStatus(204);
     })
     .delete((req, res) => {
       for (let user of req.users) {
@@ -60,9 +74,10 @@ const userRouter = (userModel => {
       user.name = body.name;
       user.password = body.password;
       user.gender = body.gender;
+      user.bday = body.bday;
       user.exp = body.exp;
       user.point = body.point;
-      user.pets = body.pets;
+      user.pet = body.pet;
       user.timestamp = body.timestamp;
       req.user.save(err => {
         if (err) {

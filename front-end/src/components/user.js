@@ -1,7 +1,16 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
+import axios from "axios";
+import { server } from "./routes.js";
 import { Pet } from "./pet.js";
-import { MAXPARA, DIFFSTATUS, LOWERBOUND, ISREQUIRED } from "./constant.js";
+import {
+  MAXPARA,
+  DIFFSTATUS,
+  LOWERBOUND,
+  ISREQUIRED,
+  MINDATE,
+  MAXDATE
+} from "./constant.js";
 
 /* eslint react/prop-types: 0 */
 
@@ -17,6 +26,10 @@ export default class UserInfo extends React.Component {
         <li>
           <label>Gender: </label>
           {userInfo.gender}
+        </li>
+        <li>
+          <label>Birthday: </label>
+          {userInfo.bday}
         </li>
         <li>
           <label>EXP: </label>
@@ -35,21 +48,37 @@ export default class UserInfo extends React.Component {
 }
 
 export class User {
-  constructor(name = "", gender = "", exp = 0, point = 0, pet = []) {
+  constructor(
+    name = "",
+    password = "",
+    gender = "",
+    bday = "",
+    exp = 0,
+    point = 0,
+    pet = [],
+    timestamp
+  ) {
     this.name = name;
+    this.password = password;
     this.gender = gender;
+    this.bday = bday;
     this.exp = exp;
     this.point = point;
     this.pet = pet;
+    this.timestamp = timestamp || new Date();
   }
 
-  addPet(name, type, gender, bday) {
-    this.pet.push(new Pet(name, type, gender, bday));
+  addPet(name, type, gender) {
+    this.pet.push(new Pet(name, type, gender));
     return this;
   }
 
   removePet(pet) {
     this.pet.splice(this.pet.indexOf(pet), 1);
+    axios.put(
+      `${server}/users?name=${this.name}&password=${this.password}`,
+      this.updateTime()
+    );
     return this;
   }
 
@@ -82,17 +111,30 @@ export class User {
     this.exp = this.exp + EXP > MAXPARA ? MAXPARA : this.exp + EXP;
     return this;
   }
+
+  updateTime() {
+    this.timestamp = new Date();
+    return this;
+  }
 }
 
 export const NewUser = props => {
   const [name, setName] = useState("");
   const [gender, setGender] = useState("Male");
+  const [bday, setBday] = useState("");
+  const [password, setPassword] = useState("");
+
   const handleSubmit = event => {
     event.preventDefault();
-    props.setUser(new User(name, gender));
-    props.setTime(0);
+    props.setPage("menu");
+
+    const user = new User(name, password, gender, bday);
+    axios.post(`${server}/users`, user);
+    props.setUser(user);
     setName("");
     setGender("Male");
+    setBday("");
+    setPassword("");
     return toast(<div>Welcome {name}!</div>);
   };
 
@@ -133,6 +175,32 @@ export const NewUser = props => {
         </label>
         <br />
 
+        <label>
+          Date:
+          <input
+            type="date"
+            name="bday"
+            value={bday}
+            min={MINDATE}
+            max={MAXDATE}
+            onChange={event => setBday(event.target.value)}
+            required={ISREQUIRED}
+          />
+        </label>
+
+        <label>
+          Password:
+          <input
+            type="password"
+            name="password"
+            value={password}
+            onChange={event => setPassword(event.target.value)}
+            placeholder="Password"
+            required={ISREQUIRED}
+          />
+        </label>
+        <br />
+
         <input
           className="confirmButton"
           type="submit"
@@ -140,6 +208,64 @@ export const NewUser = props => {
           value="Create User"
         />
       </form>
+
+      <button className="backButton" onClick={() => props.setPage("start")}>
+        Back
+      </button>
+    </div>
+  );
+};
+
+export const UserLogIn = props => {
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const handleSubmit = event => {
+    event.preventDefault();
+    props.setQuery({ name: name, password: password });
+    setName("");
+    setPassword("");
+  };
+
+  return (
+    <div className="background">
+      <form className="userForm" onSubmit={handleSubmit}>
+        <label>
+          Name:
+          <input
+            type="text"
+            name="name"
+            value={name}
+            onChange={event => setName(event.target.value)}
+            placeholder="Your Name"
+            required={ISREQUIRED}
+          />
+        </label>
+        <br />
+
+        <label>
+          Password:
+          <input
+            type="password"
+            name="password"
+            value={password}
+            onChange={event => setPassword(event.target.value)}
+            placeholder="Password"
+            required={ISREQUIRED}
+          />
+        </label>
+        <br />
+
+        <input
+          className="confirmButton"
+          type="submit"
+          name="submit"
+          value="Log In"
+        />
+      </form>
+
+      <button className="backButton" onClick={() => props.setPage("start")}>
+        Back
+      </button>
     </div>
   );
 };

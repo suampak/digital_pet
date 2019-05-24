@@ -8,7 +8,7 @@ export default function App() {
   return (
     <div>
       <PetSimulator />
-      <ToastContainer hideProgressBar="true" />
+      <ToastContainer hideProgressBar={true} />
     </div>
   );
 }

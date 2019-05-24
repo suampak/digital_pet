@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { toast } from "react-toastify";
 import Status from "./status.js";
 import Skill from "./skill.js";
+import { dateToString } from "./util.js";
 import {
   MAXACTION,
   MAXREMAINTIME,
@@ -11,6 +13,7 @@ import {
   DIFFEXP,
   ISREQUIRED
 } from "./constant.js";
+import { server } from "./routes.js";
 
 import "./../css/style.css";
 
@@ -19,7 +22,9 @@ import "./../css/style.css";
 export const PetProfile = props => {
   const user = props.user;
   const handleDelete = () => {
-    props.setPet("menu");
+    event.preventDefault();
+    props.setPage("menu");
+    props.setPet(null);
     props.setUser(user.removePet(props.pet));
     return toast(
       <div>
@@ -36,13 +41,19 @@ export const PetProfile = props => {
       <Action
         setPet={props.setPet}
         pet={props.pet}
-        setUser={user}
+        setUser={props.setUser}
         user={user}
       />
       <div className="remainAction">#Actions: {props.pet.actionLimit}</div>
       <div className="remainAction">Time Remains: {props.pet.remainTime}</div>
-      <button className="homeButton" onClick={() => props.setPet("menu")}>
-        Menu
+      <button
+        className="backButton"
+        onClick={() => {
+          props.setPage("menu");
+          props.setPet(null);
+        }}
+      >
+        Back
       </button>
       <button className="deleteButton" onClick={handleDelete}>
         Delete
@@ -54,7 +65,12 @@ export const PetProfile = props => {
 export const Action = props => {
   const clickAction = func => {
     props.setPet(func);
-    props.setUser(props.user.gainEXP(DIFFEXP));
+    const user = props.user.gainEXP(DIFFEXP).updateTime();
+    axios.put(
+      `${server}/users?name=${user.name}&password=${user.password}`,
+      user
+    );
+    props.setUser(user);
   };
 
   return (
@@ -175,7 +191,7 @@ export class PetInfo extends React.Component {
 export const PetLists = props => {
   let button;
   if (props.numPet < MAXPET) {
-    button = <button onClick={() => props.setPet("newPet")}>+</button>;
+    button = <button onClick={() => props.setPage("newPet")}>+</button>;
   }
 
   return (
@@ -184,6 +200,7 @@ export const PetLists = props => {
         <button
           key={pet}
           onClick={() => {
+            props.setPage("petInfo");
             props.setPet(pet);
           }}
         >
@@ -203,17 +220,19 @@ export class Pet {
     bday = "",
     affection = 0,
     status,
-    skill
+    skill,
+    actionLimit,
+    remainTime
   ) {
     this.name = name;
     this.type = type;
     this.gender = gender;
-    this.bday = bday;
+    this.bday = bday || dateToString(new Date());
     this.affection = affection;
     this.status = status || new Status();
     this.skill = skill || new Skill();
-    this.actionLimit = MAXACTION;
-    this.remainTime = MAXREMAINTIME;
+    this.actionLimit = actionLimit || MAXACTION;
+    this.remainTime = remainTime || MAXREMAINTIME;
   }
 
   deplete(energyDiff, hungerDiff, hygieneDiff, poopDiff) {
@@ -299,16 +318,18 @@ export const NewPet = props => {
   const [name, setName] = useState("");
   const [type, setType] = useState("Duck");
   const [gender, setGender] = useState("Male");
-  const [bday, setBday] = useState("");
   const handleSubmit = event => {
     event.preventDefault();
-    const user = props.user;
-    props.setUser(user.addPet(name, type, gender, bday));
-    props.setPet("menu");
+    const user = props.user.addPet(name, type, gender).updateTime();
+    axios.put(
+      `${server}/users?name=${user.name}&password=${user.password}`,
+      user
+    );
+    props.setUser(user);
+    props.setPage("menu");
     setName("");
     setGender("Duck");
     setGender("Male");
-    setBday("");
     return toast(
       <div>
         {user.name} has added new pet {name}
@@ -382,20 +403,6 @@ export const NewPet = props => {
         </label>
         <br />
 
-        <label>
-          Date:
-          <input
-            type="date"
-            name="bday"
-            value={bday}
-            min="1900-01-01"
-            max="2030-01-01"
-            onChange={event => setBday(event.target.value)}
-            required={ISREQUIRED}
-          />
-        </label>
-        <br />
-
         <input
           className="confirmButton"
           type="submit"
@@ -403,8 +410,8 @@ export const NewPet = props => {
           value="Add New Pet"
         />
       </form>
-      <button className="homeButton" onClick={() => props.setPet("menu")}>
-        Menu
+      <button className="backButton" onClick={() => props.setPage("menu")}>
+        Back
       </button>
     </div>
   );

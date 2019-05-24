@@ -3,9 +3,10 @@ db.users.insert([
     name: "Gookku",
     password: "gookku",
     gender: "Female",
+    bday: "2019-10-10",
     exp: 0,
     point: 0,
-    pets: [
+    pet: [
       {
         name: "Rilakkuma",
         type: "Bear",
@@ -19,7 +20,8 @@ db.users.insert([
         strength: 70,
         intelligence: 90,
         art: 80,
-        remainActions: 4
+        remainActions: 4,
+        remainTime: 2
       },
       {
         name: "SPNew",
@@ -34,7 +36,8 @@ db.users.insert([
         strength: 70,
         intelligence: 10,
         art: 80,
-        remainActions: 3
+        remainActions: 3,
+        remainTime: 2
       }
     ],
     timestamp: "1985-04-16"
@@ -43,9 +46,10 @@ db.users.insert([
     name: "Arpa",
     password: "arpa",
     gender: "Female",
+    bday: "2019-10-10",
     exp: 0,
     point: 0,
-    pets: [],
+    pet: [],
     timestamp: "1985-04-16"
   }
 ]);

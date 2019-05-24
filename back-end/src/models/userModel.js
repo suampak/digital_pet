@@ -4,9 +4,10 @@ const userModel = new Schema({
   name: { type: String },
   password: { type: String },
   gender: { type: String },
+  bday: { type: String },
   exp: { type: Number },
   point: { type: Number },
-  pets: { type: Array },
+  pet: { type: Array },
   timestamp: { type: Date }
 });
 

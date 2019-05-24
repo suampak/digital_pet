@@ -7,3 +7,5 @@ export const DIFFSTATUS = 1;
 export const DIFFSKILL = 2;
 export const DIFFEXP = 1;
 export const ISREQUIRED = true;
+export const MINDATE = "1920-01-01";
+export const MAXDATE = "2020-01-01";
