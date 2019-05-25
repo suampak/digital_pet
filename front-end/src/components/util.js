@@ -2,6 +2,7 @@ import { User } from "./user.js";
 import { Pet } from "./pet.js";
 import Status from "./status.js";
 import Skill from "./skill.js";
+import { DIFFSTATUS, TIME } from "./constant.js";
 
 export const dateToString = date => {
   return (
@@ -37,7 +38,10 @@ export const loadUser = userJson => {
         pet.remainTime
       )
   );
-  return new User(
+
+  const timediff = new Date() - new Date(userJson.timestamp);
+  const statusdiff = parseInt((timediff * DIFFSTATUS) / TIME);
+  let user = new User(
     userJson.name,
     userJson.password,
     userJson.gender,
@@ -46,5 +50,10 @@ export const loadUser = userJson => {
     userJson.point,
     petList,
     userJson.timestamp
-  );
+  )
+    .depleteAffectionAll(statusdiff)
+    .depleteAll(statusdiff)
+    .fillActionLimitAll(parseInt(timediff / TIME));
+
+  return user;
 };

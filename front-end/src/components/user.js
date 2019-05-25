@@ -82,16 +82,16 @@ export class User {
     return this;
   }
 
-  depleteAll() {
+  depleteAll(diff = DIFFSTATUS) {
     for (let p in this.pet) {
-      this.pet[p].deplete(DIFFSTATUS, DIFFSTATUS, DIFFSTATUS, DIFFSTATUS);
+      this.pet[p].deplete(diff, diff, diff, diff);
     }
     return this;
   }
 
-  depleteAffectionAll() {
+  depleteAffectionAll(diff) {
     for (let p in this.pet) {
-      this.pet[p].depleteAffection();
+      this.pet[p].depleteAffection(diff);
       if (this.pet[p].affection < LOWERBOUND) {
         toast(<div>{this.pet[p].name} is leaving...</div>);
         this.removePet(this.pet[p]);
@@ -100,9 +100,9 @@ export class User {
     return this;
   }
 
-  fillActionLimitAll() {
+  fillActionLimitAll(diff) {
     for (let p in this.pet) {
-      this.pet[p].fillActionLimit();
+      this.pet[p].fillActionLimit(diff);
     }
     return this;
   }

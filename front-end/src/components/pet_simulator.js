@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import axios from "axios";
 import UserInfo, { User, NewUser, UserLogIn } from "./user.js";
 import { PetLists, PetProfile, NewPet } from "./pet.js";
 import { loadUser } from "./util.js";
 import { server } from "./routes.js";
-import axios from "axios";
+import { TIME } from "./constant";
 
 /* eslint react/prop-types: 0 */
 
@@ -41,7 +42,7 @@ export default function PetSimulator() {
             .depleteAffectionAll()
         );
       }
-    }, 1000);
+    }, TIME);
     return () => clearTimeout(timerId);
   });
 

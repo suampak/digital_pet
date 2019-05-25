@@ -239,8 +239,8 @@ export class Pet {
     this.status.deplete(energyDiff, hungerDiff, hygieneDiff, poopDiff);
   }
 
-  depleteAffection() {
-    this.affection -= this.status.countExhausted();
+  depleteAffection(diff) {
+    this.affection -= this.status.countExhausted(diff);
   }
 
   fillSkill(strDiff, intDiff, artDiff) {
@@ -251,12 +251,28 @@ export class Pet {
     this.status.fill(energyDiff, hungerDiff, hygieneDiff, poopDiff);
   }
 
-  fillActionLimit() {
+  fillActionLimit(diff) {
     if (this.actionLimit < MAXACTION) {
-      this.remainTime--;
-      if (this.remainTime === 0) {
-        this.actionLimit++;
-        this.remainTime = MAXREMAINTIME;
+      if (diff) {
+        if (this.remainTime > diff) {
+          this.remainTime -= diff;
+        } else {
+          diff -= this.remainTime;
+          const remain = diff % MAXREMAINTIME;
+          const addAction = (diff - remain) / MAXREMAINTIME + 1;
+          this.actionLimit =
+            this.actionLimit + addAction < MAXACTION
+              ? this.actionLimit + addAction
+              : MAXACTION;
+          this.remainTime =
+            this.actionLimit < MAXACTION ? remain : MAXREMAINTIME;
+        }
+      } else {
+        this.remainTime--;
+        if (this.remainTime === 0) {
+          this.actionLimit++;
+          this.remainTime = MAXREMAINTIME;
+        }
       }
     }
   }
